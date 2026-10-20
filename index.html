@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Français ESO</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#f2f4f8;--surface:#fff;--ink:#1b2238;--muted:#5a6380;--blue:#2c47a5;--white:#fff;--red:#c0392b;
+--c1:#2c47a5;--c2:#2e7d5b;--c3:#c0392b;
+--display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#111523;--surface:#1a2033;--ink:#e8ecf6;--muted:#a1aac4;--c1:#5b74d6;--c2:#3f9a72;--c3:#d4594a;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh;display:flex;flex-direction:column}
+.flag{height:10px;display:flex}.flag i{flex:1}.flag i:nth-child(1){background:#2c47a5}.flag i:nth-child(2){background:#fff}.flag i:nth-child(3){background:#c0392b}
+header{text-align:center;padding:48px 16px 24px}
+.hello{font-family:var(--display);font-weight:600;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:.9rem;margin:0}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,8vw,4.2rem);margin:.2em 0 .1em;line-height:1}
+.sub{color:var(--muted);font-size:1.1rem;margin:0}
+main{flex:1;width:100%;max-width:960px;margin:0 auto;padding:16px;display:grid;gap:20px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));align-content:start}
+a.course{display:flex;flex-direction:column;justify-content:space-between;min-height:220px;padding:24px;border-radius:22px;color:#fff;text-decoration:none;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(20,30,60,.15);transition:transform .15s,box-shadow .15s}
+a.course:hover,a.course:focus-visible{transform:translateY(-4px);box-shadow:0 14px 30px rgba(20,30,60,.25);outline:none}
+a.course:nth-child(1){background:var(--c1)}a.course:nth-child(2){background:var(--c2)}a.course:nth-child(3){background:var(--c3)}
+.num{font-family:var(--display);font-weight:800;font-size:5.5rem;line-height:.9}
+.num sup{font-size:.4em}
+.lbl{font-family:var(--display);font-weight:600;font-size:1.4rem}
+.go{font-weight:700;opacity:.9}
+.emoji{position:absolute;right:18px;top:16px;font-size:2.6rem}
+footer{text-align:center;color:var(--muted);padding:28px 16px;font-size:.95rem}
+</style>
+</head>
+<body>
+<div class="flag"><i></i><i></i><i></i></div>
+<header>
+  <p class="hello">Bonjour&nbsp;!</p>
+  <h1>Le français au collège</h1>
+  <p class="sub">Choisis ta classe pour voir tes activités.</p>
+</header>
+<main>
+  <a class="course" href="1eso/"><span class="emoji">🥐</span><span class="num">1<sup>re</sup></span><span><span class="lbl">ESO</span><br><span class="go">Entrer →</span></span></a>
+  <a class="course" href="2eso/"><span class="emoji">🎒</span><span class="num">2<sup>e</sup></span><span><span class="lbl">ESO</span><br><span class="go">Entrer →</span></span></a>
+  <a class="course" href="3eso/"><span class="emoji">🏠</span><span class="num">3<sup>e</sup></span><span><span class="lbl">ESO</span><br><span class="go">Entrer →</span></span></a>
+</main>
+<footer>Ta professeure te donnera le mot de passe de ta classe.</footer>
+</body>
+</html>

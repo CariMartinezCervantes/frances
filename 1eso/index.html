@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Français 1re ESO</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{--bg:#f2f4f8;--surface:#fff;--ink:#1b2238;--muted:#5a6380;--line:#d6dbe7;--accent:#2c47a5;
+--display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root{--bg:#111523;--surface:#1a2033;--ink:#e8ecf6;--muted:#a1aac4;--line:#2e3650;--accent:#5b74d6;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh}
+header{background:var(--accent);color:#fff;padding:28px 16px 32px}
+.wrap{max-width:820px;margin:0 auto}
+.back{color:#fff;opacity:.9;text-decoration:none;font-weight:700}
+.back:hover{text-decoration:underline}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.2rem);margin:.4em 0 0;line-height:1.05}
+main{max-width:820px;margin:0 auto;padding:24px 16px 48px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px}
+.lock{max-width:420px;margin:24px auto;text-align:center}
+.lock .big{font-size:3rem}
+.lock h2{font-family:var(--display);margin:.2em 0}
+.lock p{color:var(--muted)}
+input{font:inherit;font-size:1.1rem;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin:8px 0 12px;text-align:center}
+input:focus{outline:none;border-color:var(--accent)}
+button{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 22px;cursor:pointer;width:100%}
+.err{color:#c0392b;font-weight:700;min-height:1.4em;margin:8px 0 0}
+.list{display:grid;gap:14px;padding:0;margin:0;list-style:none}
+.list a{display:flex;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--accent);border-radius:16px;padding:18px;text-decoration:none;color:var(--ink);transition:transform .12s}
+.list a:hover,.list a:focus-visible{transform:translateX(4px);outline:none;border-color:var(--accent)}
+.ico{font-size:2rem}
+.t{font-family:var(--display);font-weight:800;font-size:1.25rem;display:block}
+.d{color:var(--muted)}
+.empty{text-align:center;color:var(--muted)}
+.empty .big{font-size:3rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="back" href="../">← Toutes les classes</a>
+  <h1>🥐 Français · 1<sup>re</sup> ESO</h1>
+</div></header>
+<main>
+  <form class="card lock" id="lock">
+    <div class="big">🔒</div>
+    <h2>Mot de passe</h2>
+    <p>Écris le mot de passe de ta classe.</p>
+    <input id="pw" type="password" autocomplete="off" aria-label="Mot de passe">
+    <button type="submit">Entrer</button>
+    <p class="err" id="err" role="alert"></p>
+  </form>
+  <section id="content" hidden>
+    <ul class="list" id="list"></ul>
+    <div class="card empty" id="empty" hidden><div class="big">✨</div><p>Bientôt, de nouvelles activités ici&nbsp;!</p></div>
+  </section>
+</main>
+<script>
+// ====== PARA CAMBIAR LA CLAVE DE ESTE CURSO, CAMBIA SOLO LO QUE VA ENTRE COMILLAS ======
+const CLAVE = "croissant1";
+// ====== PARA AÑADIR UNA ACTIVIDAD, COPIA UN BLOQUE { ... } Y CAMBIA LOS DATOS ======
+const ACTIVITES = [
+  {
+    "titre": "Être et avoir · Le monstre Zigo",
+    "desc": "Les verbes être et avoir, les nombres et le corps",
+    "lien": "zigo.html",
+    "icone": "👾"
+  }
+];
+// =======================================================================================
+const KEY = "fr-ok-1eso";
+const lock = document.getElementById("lock"), content = document.getElementById("content");
+function ok(){ try{ return sessionStorage.getItem(KEY) === "1"; }catch(e){ return false; } }
+function show(){
+  lock.hidden = true; content.hidden = false;
+  const ul = document.getElementById("list");
+  ACTIVITES.forEach(a => {
+    const li = document.createElement("li"), link = document.createElement("a");
+    link.href = a.lien;
+    link.innerHTML = `<span class="ico">${a.icone || "📘"}</span><span><span class="t"></span><span class="d"></span></span>`;
+    link.querySelector(".t").textContent = a.titre;
+    link.querySelector(".d").textContent = a.desc || "";
+    li.appendChild(link); ul.appendChild(li);
+  });
+  document.getElementById("empty").hidden = ACTIVITES.length > 0;
+}
+lock.addEventListener("submit", e => {
+  e.preventDefault();
+  const v = document.getElementById("pw").value.trim().toLowerCase();
+  if (v === CLAVE.toLowerCase()) { try{ sessionStorage.setItem(KEY, "1"); }catch(err){} show(); }
+  else { document.getElementById("err").textContent = "Ce n'est pas le bon mot de passe. Essaie encore."; }
+});
+if (ok()) show(); else document.getElementById("pw").focus();
+</script>
+</body>
+</html>
