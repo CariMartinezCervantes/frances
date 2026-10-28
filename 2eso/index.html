@@ -34,6 +34,12 @@ button{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);c
 .d{color:var(--muted)}
 .empty{text-align:center;color:var(--muted)}
 .empty .big{font-size:3rem}
+.tabs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}
+.tabs a{background:var(--surface);border:2px solid var(--accent);color:var(--ink);border-radius:99px;padding:8px 16px;font-weight:700;text-decoration:none}
+.tabs a:hover,.tabs a:focus-visible{background:var(--accent);color:#fff;outline:none}
+.rub{margin:0 0 30px;scroll-margin-top:12px}
+.rub h2{font-family:var(--display);font-weight:800;font-size:1.6rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.rub .none{color:var(--muted);background:var(--surface);border:1px dashed var(--line);border-radius:16px;padding:16px;margin:0}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -52,20 +58,35 @@ button{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);c
     <p class="err" id="err" role="alert"></p>
   </form>
   <section id="content" hidden>
-    <ul class="list" id="list"></ul>
-    <div class="card empty" id="empty" hidden><div class="big">✨</div><p>Bientôt, de nouvelles activités ici&nbsp;!</p></div>
+    <nav class="tabs" id="tabs"></nav>
+    <div id="rubs"></div>
   </section>
 </main>
 <script>
 // ====== PARA CAMBIAR LA CLAVE DE ESTE CURSO, CAMBIA SOLO LO QUE VA ENTRE COMILLAS ======
 const CLAVE = "cartable2";
-// ====== PARA AÑADIR UNA ACTIVIDAD, COPIA UN BLOQUE { ... } Y CAMBIA LOS DATOS ======
-const ACTIVITES = [
+// ====== LOS APARTADOS DEL CURSO (para añadir uno, copia una línea y cambia los datos) ======
+const APARTADOS = [
+  { "id": "vocabulaire", "titre": "Vocabulaire", "icone": "📚" },
+  { "id": "activites",   "titre": "Activités",   "icone": "🎯" },
+  { "id": "materiel",    "titre": "Matériel",    "icone": "🗂️" }
+];
+// ====== EL CONTENIDO: para añadir algo, copia un bloque { ... } y cambia los datos ======
+// En "apartado" pon: vocabulaire, activites o materiel
+const CONTENUS = [
   {
+    "apartado": "materiel",
     "titre": "Ma vie de collégien",
     "desc": "Fiches de travail (PDF)",
     "lien": "ma-vie-de-collegien.pdf",
     "icone": "📄"
+  },
+  {
+    "apartado": "activites",
+    "titre": "Halloween au collège",
+    "desc": "Vocabulaire, BD, l'heure et les lieux du collège (activité interactive + PDF)",
+    "lien": "halloween.html",
+    "icone": "🎃"
   }
 ];
 // =======================================================================================
@@ -74,16 +95,27 @@ const lock = document.getElementById("lock"), content = document.getElementById(
 function ok(){ try{ return sessionStorage.getItem(KEY) === "1"; }catch(e){ return false; } }
 function show(){
   lock.hidden = true; content.hidden = false;
-  const ul = document.getElementById("list");
-  ACTIVITES.forEach(a => {
-    const li = document.createElement("li"), link = document.createElement("a");
-    link.href = a.lien;
-    link.innerHTML = `<span class="ico">${a.icone || "📘"}</span><span><span class="t"></span><span class="d"></span></span>`;
-    link.querySelector(".t").textContent = a.titre;
-    link.querySelector(".d").textContent = a.desc || "";
-    li.appendChild(link); ul.appendChild(li);
+  const tabs = document.getElementById("tabs"), rubs = document.getElementById("rubs");
+  APARTADOS.forEach(r => {
+    const tab = document.createElement("a");
+    tab.href = "#" + r.id; tab.textContent = r.icone + " " + r.titre; tabs.appendChild(tab);
+    const sec = document.createElement("section");
+    sec.className = "rub"; sec.id = r.id;
+    sec.innerHTML = `<h2></h2><ul class="list"></ul><p class="none">Bientôt ici&nbsp;!</p>`;
+    sec.querySelector("h2").textContent = r.icone + " " + r.titre;
+    const ul = sec.querySelector("ul");
+    const its = CONTENUS.filter(a => a.apartado === r.id);
+    its.forEach(a => {
+      const li = document.createElement("li"), link = document.createElement("a");
+      link.href = a.lien;
+      link.innerHTML = `<span class="ico">${a.icone || r.icone}</span><span><span class="t"></span><span class="d"></span></span>`;
+      link.querySelector(".t").textContent = a.titre;
+      link.querySelector(".d").textContent = a.desc || "";
+      li.appendChild(link); ul.appendChild(li);
+    });
+    sec.querySelector(".none").hidden = its.length > 0;
+    rubs.appendChild(sec);
   });
-  document.getElementById("empty").hidden = ACTIVITES.length > 0;
 }
 lock.addEventListener("submit", e => {
   e.preventDefault();
