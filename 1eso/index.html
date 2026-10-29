@@ -6,41 +6,67 @@
 <title>Français 1re ESO</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
 <style>
-:root{--bg:#f2f4f8;--surface:#fff;--ink:#1b2238;--muted:#5a6380;--line:#d6dbe7;--accent:#2c47a5;
+:root{--bg:#fdf6ec;--surface:#fff;--ink:#1b2238;--muted:#5a6380;--line:#ecdfcb;--accent:#2c47a5;
 --display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;--body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root{--bg:#111523;--surface:#1a2033;--ink:#e8ecf6;--muted:#a1aac4;--line:#2e3650;--accent:#5b74d6;color-scheme:dark}}
+@media (prefers-color-scheme:dark){:root{--bg:#141826;--surface:#1d2335;--ink:#eef1f8;--muted:#a7b0c8;--line:#2e3650;--accent:#4a64c4;color-scheme:dark}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh}
-header{background:var(--accent);color:#fff;padding:28px 16px 32px}
-.wrap{max-width:820px;margin:0 auto}
-.back{color:#fff;opacity:.9;text-decoration:none;font-weight:700}
-.back:hover{text-decoration:underline}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.2rem);margin:.4em 0 0;line-height:1.05}
-main{max-width:820px;margin:0 auto;padding:24px 16px 48px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);min-height:100vh;overflow-x:hidden}
+header{background:var(--accent);color:#fff;padding:22px 16px 34px;position:relative;overflow:hidden}
+header .deco{position:absolute;right:-10px;bottom:-26px;font-size:9rem;opacity:.18;transform:rotate(-12deg);pointer-events:none}
+.wrap{max-width:1000px;margin:0 auto;position:relative}
+.back{display:inline-block;color:#fff;text-decoration:none;font-weight:700;background:rgba(255,255,255,.18);border-radius:99px;padding:6px 14px}
+.back:hover,.back:focus-visible{background:rgba(255,255,255,.3);outline:none}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3.4rem);margin:.45em 0 0;line-height:1.02}
+.lead{margin:.4em 0 0;opacity:.92;font-size:1.1rem}
+main{max-width:1000px;margin:0 auto;padding:26px 16px 56px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:24px}
 .lock{max-width:420px;margin:24px auto;text-align:center}
 .lock .big{font-size:3rem}
 .lock h2{font-family:var(--display);margin:.2em 0}
 .lock p{color:var(--muted)}
 input{font:inherit;font-size:1.1rem;width:100%;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--bg);color:var(--ink);margin:8px 0 12px;text-align:center}
 input:focus{outline:none;border-color:var(--accent)}
-button{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 22px;cursor:pointer;width:100%}
+.btn{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);color:#fff;border:0;border-radius:12px;padding:12px 22px;cursor:pointer;width:100%}
 .err{color:#c0392b;font-weight:700;min-height:1.4em;margin:8px 0 0}
-.list{display:grid;gap:14px;padding:0;margin:0;list-style:none}
-.list a{display:flex;gap:16px;align-items:center;background:var(--surface);border:1px solid var(--line);border-left:8px solid var(--accent);border-radius:16px;padding:18px;text-decoration:none;color:var(--ink);transition:transform .12s}
-.list a:hover,.list a:focus-visible{transform:translateX(4px);outline:none;border-color:var(--accent)}
-.ico{font-size:2rem}
-.t{font-family:var(--display);font-weight:800;font-size:1.25rem;display:block}
-.d{color:var(--muted)}
-.empty{text-align:center;color:var(--muted)}
-.empty .big{font-size:3rem}
+/* ---------- Mosaico de unidades ---------- */
+.h2{font-family:var(--display);font-weight:800;font-size:1.6rem;margin:0 0 16px}
+.units{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+a.unit{--u:var(--accent);display:flex;flex-direction:column;border-radius:22px;overflow:hidden;text-decoration:none;color:#fff;background:var(--u);box-shadow:0 8px 22px rgba(20,30,60,.16);transition:transform .16s,box-shadow .16s}
+a.unit:hover,a.unit:focus-visible{transform:translateY(-5px) rotate(-.5deg);box-shadow:0 16px 30px rgba(20,30,60,.26);outline:none}
+.unit .pic{height:120px;display:grid;place-items:center;font-size:4.2rem;background:rgba(255,255,255,.14);background-size:cover;background-position:center;filter:drop-shadow(0 5px 0 rgba(0,0,0,.15))}
+.unit .txt{padding:14px 18px 18px}
+.unit .n{font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.82rem;opacity:.9}
+.unit .t{font-family:var(--display);font-weight:800;font-size:1.4rem;line-height:1.1;display:block;margin:2px 0 8px}
+.unit .count{display:inline-block;background:#fff;color:#1b2238;border-radius:99px;padding:3px 12px;font-weight:700;font-size:.9rem}
+.ghost{border:3px dashed var(--line);border-radius:22px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:24px;min-height:200px;font-weight:700}
+.ghost span{display:block;font-size:2.4rem}
+/* ---------- Vista de una unidad ---------- */
+.ubanner{--u:var(--accent);background:var(--u);color:#fff;border-radius:22px;padding:20px 22px;display:flex;align-items:center;gap:18px;margin:0 0 22px}
+.ubanner .e{font-size:3.4rem;line-height:1}
+.ubanner .n{font-weight:800;text-transform:uppercase;letter-spacing:.08em;font-size:.85rem;opacity:.9}
+.ubanner h2{font-family:var(--display);font-weight:800;font-size:clamp(1.6rem,5vw,2.3rem);margin:0;line-height:1.05}
+.tolist{display:inline-block;margin:0 0 16px;color:var(--ink);font-weight:700;text-decoration:none;background:var(--surface);border:2px solid var(--line);border-radius:99px;padding:7px 16px}
+.tolist:hover,.tolist:focus-visible{border-color:var(--accent);outline:none}
+.group{margin:0 0 26px}
+.group h3{font-family:var(--display);font-weight:800;font-size:1.3rem;margin:0 0 12px}
+.list{display:grid;gap:14px;padding:0;margin:0;list-style:none;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.list a{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:18px;overflow:hidden;text-decoration:none;color:var(--ink);height:100%;transition:transform .14s,box-shadow .14s}
+.list a:hover,.list a:focus-visible{transform:translateY(-3px);box-shadow:0 10px 22px rgba(20,30,60,.14);outline:none;border-color:var(--accent)}
+.list .img{aspect-ratio:1200/630;background:var(--bg) center/cover no-repeat}
+.list .row{display:flex;gap:14px;align-items:center;padding:16px}
+.ico{font-size:2rem;flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:var(--bg)}
+.it{font-family:var(--display);font-weight:800;font-size:1.15rem;display:block;line-height:1.15}
+.id{color:var(--muted);font-size:.95rem}
+.none{color:var(--muted);background:var(--surface);border:2px dashed var(--line);border-radius:18px;padding:18px;text-align:center;margin:0}
 [hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<header><div class="wrap">
+<header><div class="deco" aria-hidden="true">🥐</div><div class="wrap">
   <a class="back" href="../">← Toutes les classes</a>
   <h1>🥐 Français · 1<sup>re</sup> ESO</h1>
+  <p class="lead" id="lead">Choisis une unité.</p>
 </div></header>
 <main>
   <form class="card lock" id="lock">
@@ -48,20 +74,40 @@ button{font:inherit;font-weight:700;font-size:1.05rem;background:var(--accent);c
     <h2>Mot de passe</h2>
     <p>Écris le mot de passe de ta classe.</p>
     <input id="pw" type="password" autocomplete="off" aria-label="Mot de passe">
-    <button type="submit">Entrer</button>
+    <button class="btn" type="submit">Entrer</button>
     <p class="err" id="err" role="alert"></p>
   </form>
-  <section id="content" hidden>
-    <ul class="list" id="list"></ul>
-    <div class="card empty" id="empty" hidden><div class="big">✨</div><p>Bientôt, de nouvelles activités ici&nbsp;!</p></div>
+  <section id="home" hidden>
+    <h2 class="h2">📘 Mes unités</h2>
+    <div class="units" id="units"></div>
   </section>
+  <section id="unit" hidden></section>
 </main>
 <script>
 // ====== PARA CAMBIAR LA CLAVE DE ESTE CURSO, CAMBIA SOLO LO QUE VA ENTRE COMILLAS ======
 const CLAVE = "croissant1";
-// ====== PARA AÑADIR UNA ACTIVIDAD, COPIA UN BLOQUE { ... } Y CAMBIA LOS DATOS ======
-const ACTIVITES = [
+
+// ====== LAS UNIDADES DEL CURSO ======
+// Para añadir una unidad: copia un bloque { ... }, pégalo debajo (separado por una coma) y cambia los datos.
+// "id" es un nombre corto sin espacios ni tildes (u1, u2, u3...). "couleur" es el color de la tarjeta.
+const UNITES = [
   {
+    "id": "u1",
+    "numero": "1",
+    "titre": "La rentrée",
+    "icone": "✏️",
+    "couleur": "#2e8b57"
+  }
+];
+
+// ====== EL CONTENIDO DE CADA UNIDAD ======
+// Para añadir algo: copia un bloque { ... } y cambia los datos.
+// En "unite" pon el id de la unidad (u1, u2...). En "type" pon: vocabulaire, activite o materiel.
+// "image" es opcional: el nombre de una foto que hayas subido a esta misma carpeta.
+const CONTENUS = [
+  {
+    "unite": "u1",
+    "type": "activite",
     "titre": "Être et avoir · Le monstre Zigo",
     "desc": "Les verbes être et avoir, les nombres et le corps",
     "lien": "zigo.html",
@@ -69,29 +115,74 @@ const ACTIVITES = [
   }
 ];
 // =======================================================================================
+
+const TYPES = [
+  { "id": "vocabulaire", "titre": "Vocabulaire", "icone": "📚" },
+  { "id": "activite",    "titre": "Activités",   "icone": "🎯" },
+  { "id": "materiel",    "titre": "Matériel",    "icone": "🗂️" }
+];
 const KEY = "fr-ok-1eso";
-const lock = document.getElementById("lock"), content = document.getElementById("content");
+const $ = id => document.getElementById(id);
 function ok(){ try{ return sessionStorage.getItem(KEY) === "1"; }catch(e){ return false; } }
-function show(){
-  lock.hidden = true; content.hidden = false;
-  const ul = document.getElementById("list");
-  ACTIVITES.forEach(a => {
-    const li = document.createElement("li"), link = document.createElement("a");
-    link.href = a.lien;
-    link.innerHTML = `<span class="ico">${a.icone || "📘"}</span><span><span class="t"></span><span class="d"></span></span>`;
-    link.querySelector(".t").textContent = a.titre;
-    link.querySelector(".d").textContent = a.desc || "";
-    li.appendChild(link); ul.appendChild(li);
+function el(tag, cls, text){ const e = document.createElement(tag); if(cls) e.className = cls; if(text != null) e.textContent = text; return e; }
+function label(u){ return u.numero ? "Unité " + u.numero : "Spécial"; }
+function plural(n){ return n === 0 ? "Bientôt" : n + (n === 1 ? " ressource" : " ressources"); }
+
+function drawHome(){
+  const box = $("units"); box.innerHTML = "";
+  UNITES.forEach(u => {
+    const a = el("a", "unit"); a.href = "#" + u.id;
+    if (u.couleur) a.style.setProperty("--u", u.couleur);
+    const pic = el("div", "pic", u.icone || "📘"); pic.setAttribute("aria-hidden", "true");
+    const txt = el("div", "txt");
+    txt.append(el("span", "n", label(u)), el("span", "t", u.titre), el("span", "count", plural(CONTENUS.filter(c => c.unite === u.id).length)));
+    a.append(pic, txt); box.appendChild(a);
   });
-  document.getElementById("empty").hidden = ACTIVITES.length > 0;
+  const g = el("div", "ghost"); g.innerHTML = "<div><span>✨</span>Bientôt, d'autres unités&nbsp;!</div>";
+  box.appendChild(g);
 }
-lock.addEventListener("submit", e => {
+
+function drawUnit(u){
+  const box = $("unit"); box.innerHTML = "";
+  const back = el("a", "tolist", "← Toutes les unités"); back.href = "#";
+  const ban = el("div", "ubanner"); if (u.couleur) ban.style.setProperty("--u", u.couleur);
+  const e = el("div", "e", u.icone || "📘"); e.setAttribute("aria-hidden", "true");
+  const t = el("div"); t.append(el("div", "n", label(u)), el("h2", null, u.titre));
+  ban.append(e, t); box.append(back, ban);
+  const items = CONTENUS.filter(c => c.unite === u.id);
+  if (!items.length) { box.appendChild(el("p", "none", "Bientôt, des activités ici !")); return; }
+  TYPES.forEach(ty => {
+    const its = items.filter(c => c.type === ty.id);
+    if (!its.length) return;
+    const g = el("section", "group"); g.appendChild(el("h3", null, ty.icone + " " + ty.titre));
+    const ul = el("ul", "list");
+    its.forEach(c => {
+      const li = el("li"), a = el("a"); a.href = c.lien;
+      if (c.image) { const im = el("div", "img"); im.style.backgroundImage = "url('" + c.image + "')"; a.appendChild(im); }
+      const row = el("div", "row"), ico = el("span", "ico", c.icone || ty.icone), txt = el("span");
+      txt.append(el("span", "it", c.titre), el("span", "id", c.desc || ""));
+      row.append(ico, txt); a.appendChild(row); li.appendChild(a); ul.appendChild(li);
+    });
+    g.appendChild(ul); box.appendChild(g);
+  });
+}
+
+function route(){
+  if (!ok()) return;
+  $("lock").hidden = true;
+  const u = UNITES.find(x => "#" + x.id === location.hash);
+  $("home").hidden = !!u; $("unit").hidden = !u; $("lead").hidden = !!u;
+  if (u) drawUnit(u); else drawHome();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+$("lock").addEventListener("submit", e => {
   e.preventDefault();
-  const v = document.getElementById("pw").value.trim().toLowerCase();
-  if (v === CLAVE.toLowerCase()) { try{ sessionStorage.setItem(KEY, "1"); }catch(err){} show(); }
-  else { document.getElementById("err").textContent = "Ce n'est pas le bon mot de passe. Essaie encore."; }
+  const v = $("pw").value.trim().toLowerCase();
+  if (v === CLAVE.toLowerCase()) { try{ sessionStorage.setItem(KEY, "1"); }catch(err){} route(); }
+  else { $("err").textContent = "Ce n'est pas le bon mot de passe. Essaie encore."; }
 });
-if (ok()) show(); else document.getElementById("pw").focus();
+if (ok()) route(); else { $("lock").hidden = false; $("pw").focus(); }
 </script>
 </body>
 </html>
