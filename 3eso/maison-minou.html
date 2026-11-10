@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<script>try{if(sessionStorage.getItem("fr-ok-3eso")!=="1")location.replace("./");}catch(e){}</script>
+<title>La maison de Minou</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:ital,wght@0,600;0,800;1,600&display=swap">
+<style>
+/* Layout: barra de equipos arriba, pestañas, escenario 16:9 grande a la izquierda y panel de pregunta a la derecha (se apila en móvil) */
+:root{
+  --sky:#E3EEF9; --ink:#2A2547; --muted:#5F5A78; --paper:#FFFFFF; --line:#D5DCEA;
+  --g1:#1F9D6B; --g2:#E06A22; --g3:#2F6FD6; --ok:#1F9D6B; --ko:#D2393B;
+  --wall:#F6E7CF; --floor:#DDBF93; --wood:#A86B3C; --roof:#C8553D;
+  --display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--sky);color:var(--ink);font-family:var(--body);font-size:16px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--g3);outline-offset:2px}
+.wrap{max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+/* top */
+.top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.brand{font-family:var(--display);font-weight:700;font-size:clamp(24px,3vw,38px);display:flex;align-items:center;gap:10px}
+.brand small{font-family:var(--body);font-size:14px;color:var(--muted);font-weight:800;letter-spacing:.04em}
+.teams{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.team{display:flex;align-items:center;gap:6px;background:var(--paper);border:3px solid transparent;border-radius:14px;padding:4px 8px 4px 10px;transition:transform .2s}
+.team.active{border-color:var(--ink);transform:translateY(-2px);box-shadow:0 4px 0 var(--ink)}
+.team .nm{font-weight:800;font-size:16px;white-space:nowrap}
+.team .sc{font-family:var(--display);font-weight:700;font-size:26px;min-width:1.6em;text-align:center;font-variant-numeric:tabular-nums}
+.team .mini{border:0;background:var(--sky);border-radius:8px;width:26px;height:26px;font-weight:800;line-height:1}
+.team.bump .sc{animation:bump .5s}
+@keyframes bump{40%{transform:scale(1.6);color:var(--ok)}}
+.tset{display:flex;gap:4px;align-items:center;font-size:13px;color:var(--muted);font-weight:800}
+.tset button{border:2px solid var(--line);background:var(--paper);border-radius:8px;padding:2px 8px;font-weight:800}
+.tset button[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* tabs */
+.tabs{display:flex;flex-wrap:wrap;gap:8px}
+.tab{border:0;background:rgba(255,255,255,.55);border-radius:999px;padding:10px 18px;font-family:var(--display);font-weight:600;font-size:clamp(16px,1.6vw,21px)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff}
+/* main */
+.main{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:900px){.main{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative}
+.panel{background:var(--paper);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.kicker{font-size:14px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.prompt{font-family:var(--display);font-weight:600;font-size:clamp(22px,2.4vw,34px);line-height:1.2;text-wrap:balance}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{border:3px solid var(--line);background:var(--paper);border-radius:14px;padding:12px 14px;text-align:left;font-weight:800;font-size:clamp(17px,1.7vw,23px);transition:transform .1s}
+.opt:hover:not(:disabled){border-color:var(--ink);transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.wrong{background:var(--ko);border-color:var(--ko);color:#fff;text-decoration:line-through}
+.opt.dim{opacity:.45}
+.fb{border-radius:14px;padding:12px 14px;font-weight:800;font-size:clamp(16px,1.6vw,21px);line-height:1.35}
+.fb.ok{background:#DDF3E8;color:#12583D}
+.fb.ko{background:#FBE1E1;color:#8E1F21}
+.fb .say{display:block;font-family:var(--display);font-weight:600;font-size:1.15em;color:var(--ink);margin-top:4px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:0;border-radius:12px;padding:12px 18px;font-family:var(--display);font-weight:600;font-size:clamp(16px,1.6vw,20px);background:var(--ink);color:#fff}
+.btn.soft{background:var(--sky);color:var(--ink)}
+.btn.big{flex:1}
+.timer{height:10px;border-radius:99px;background:var(--sky);overflow:hidden}
+.timer i{display:block;height:100%;width:100%;background:var(--g3);transform-origin:left}
+.legend{display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-block;border-radius:999px;padding:3px 10px;color:#fff;font-weight:800;font-size:13px}
+.k1{color:var(--g1)} .k2{color:var(--g2)} .k3{color:var(--g3)}
+.help{font-size:14px;color:var(--muted);line-height:1.45}
+.help summary{cursor:pointer;font-weight:800}
+/* scene */
+.scene{position:relative;width:100%;aspect-ratio:16/9;container-type:inline-size;border-radius:20px;overflow:hidden;border:5px solid #8A6B4C;background:var(--wall)}
+.scene .floor{position:absolute;left:0;right:0;top:35cqw;bottom:0;background:var(--floor)}
+.scene .o{position:absolute;line-height:1;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.scene svg.o{height:auto}
+.scene .roomname{position:absolute;left:2cqw;bottom:1.6cqw;background:rgba(255,255,255,.85);border-radius:99px;padding:.6cqw 1.8cqw;font-family:var(--display);font-weight:600;font-size:2.6cqw;z-index:9}
+.cat{z-index:6;animation:pop .45s cubic-bezier(.3,1.6,.6,1)}
+@keyframes pop{from{transform:scale(.2);opacity:0}}
+.curtain{position:absolute;inset:0;z-index:20;background:repeating-linear-gradient(90deg,#B23A48 0 4cqw,#9B2F3D 4cqw 8cqw);display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-family:var(--display);font-weight:700;font-size:5cqw;text-align:center;gap:1cqw}
+.curtain small{font-size:2.4cqw;font-weight:500}
+.count{position:absolute;right:2cqw;top:2cqw;z-index:21;background:var(--ink);color:#fff;border-radius:99px;font-family:var(--display);font-weight:700;font-size:3.4cqw;padding:.4cqw 2cqw}
+/* house */
+.house{position:relative;width:100%;aspect-ratio:16/9;container-type:inline-size;border-radius:20px;overflow:hidden;background:linear-gradient(#BFE0F7 0 70%,#8CCB6B 70%)}
+.house .roof{position:absolute;left:21cqw;top:2cqw;width:58cqw;height:12cqw;background:var(--roof);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.house .body{position:absolute;left:24cqw;top:14cqw;width:52cqw;height:36cqw;background:#8A6B4C;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:1fr 1fr;gap:.8cqw;padding:.8cqw;border-radius:.6cqw}
+.room{border:0;background:var(--wall);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6cqw;padding:.6cqw;position:relative;font-size:1cqw}
+.room .ic{font-size:6.5cqw;line-height:1;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.room .lb{font-family:var(--display);font-weight:600;font-size:2cqw;background:#fff;border-radius:99px;padding:.3cqw 1.2cqw;white-space:nowrap}
+.room:hover{filter:brightness(1.05)}
+.room.hl{outline:1cqw solid #FFD23F;outline-offset:-1cqw;animation:blink 1s infinite alternate}
+@keyframes blink{to{outline-color:#FF9F1C}}
+.room.good{background:#BDEBD3} .room.bad{background:#F7C6C6}
+.annex{position:absolute;border:0}
+.garage{left:5cqw;top:30cqw;width:17cqw;height:20cqw;background:#CFC6B8;border-radius:.6cqw .6cqw 0 0}
+.garden{left:78cqw;top:33cqw;width:20cqw;height:20cqw;background:transparent}
+.garage .ic,.garden .ic{font-size:6.5cqw}
+.etage{position:absolute;left:77cqw;font-family:var(--display);font-weight:700;font-size:2.2cqw;color:var(--ink);background:rgba(255,255,255,.8);border-radius:99px;padding:.2cqw 1.2cqw}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<!-- ====== CLAVE PROPIA DE ESTA ACTIVIDAD: cambia solo lo que va entre comillas ====== -->
+<script>const CLAVE_MINOU = "minou3";</script>
+<div id="lock" style="position:fixed;inset:0;z-index:100;background:#E3EEF9;display:flex;align-items:center;justify-content:center;padding:16px">
+ <form id="lockf" style="background:#fff;border-radius:20px;padding:28px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:12px;font-family:Nunito,system-ui,sans-serif;color:#2A2547">
+  <div style="font-family:Fredoka,system-ui,sans-serif;font-weight:700;font-size:30px">🐱 La maison de Minou</div>
+  <label for="pw" style="font-weight:800">Mot de passe</label>
+  <input id="pw" type="password" autocomplete="off" style="font-size:20px;padding:10px 12px;border:2px solid #D5DCEA;border-radius:12px">
+  <div id="pwerr" style="color:#D2393B;font-weight:800" hidden>Ce n'est pas le bon mot de passe.</div>
+  <button style="border:0;border-radius:12px;padding:12px;background:#2A2547;color:#fff;font-size:18px;font-weight:800;cursor:pointer">Entrer</button>
+  <a href="./" style="color:#5F5A78;font-weight:800">← Retour</a>
+ </form>
+</div>
+<script>
+(function(){const K="fr-ok-minou",L=document.getElementById('lock');
+ try{if(sessionStorage.getItem(K)==="1"){L.remove();return}}catch(e){}
+ document.getElementById('lockf').addEventListener('submit',ev=>{ev.preventDefault();
+  if(document.getElementById('pw').value.trim().toLowerCase()===CLAVE_MINOU.toLowerCase()){try{sessionStorage.setItem(K,"1")}catch(e){}L.remove()}
+  else{document.getElementById('pwerr').hidden=false}});
+ setTimeout(()=>document.getElementById('pw').focus(),50);})();
+</script>
+
+
+<div class="wrap">
+  <div class="top">
+    <div class="brand">🐱 La maison de Minou <small>3º ESO · CHEZ MOI</small></div>
+    <div class="teams" id="teams"></div>
+  </div>
+  <div class="row" style="justify-content:space-between">
+    <div class="tabs" role="tablist" id="tabs">
+      <button class="tab" role="tab" data-v="pieces">🏠 Les pièces</button>
+      <button class="tab" role="tab" data-v="ilya">🔍 Il y a / Il n'y a pas</button>
+      <button class="tab" role="tab" data-v="minou">🐱 Où est Minou ?</button>
+      <button class="tab" role="tab" data-v="defi">⭐ Grand défi</button>
+    </div>
+    <div class="tset">Équipes
+      <button data-n="2" id="t2">2</button><button data-n="3" id="t3">3</button><button data-n="4" id="t4">4</button>
+      &nbsp;⏱ <button id="tmr" aria-pressed="true">20 s</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="stage" id="stage"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- datos ---------- */
+const TEAMS=[{n:'Croissants',e:'🥐'},{n:'Baguettes',e:'🥖'},{n:'Fromages',e:'🧀'},{n:'Crêpes',e:'🥞'}];
+let S={memo:false,nTeams:2,scores:[0,0,0,0],active:0,timer:true,view:'pieces',houseMode:'explore'};
+try{const s=JSON.parse(localStorage.getItem('maison-minou-v1'));if(s)Object.assign(S,s,{view:S.view})}catch(e){}
+function save(){try{localStorage.setItem('maison-minou-v1',JSON.stringify({nTeams:S.nTeams,scores:S.scores,active:S.active,timer:S.timer}))}catch(e){}}
+
+const SVG={
+ table:c=>`<svg viewBox="0 0 200 120"><rect width="200" height="16" rx="5" fill="${c||'#A86B3C'}"/><rect x="14" y="16" width="14" height="104" fill="${c||'#A86B3C'}"/><rect x="172" y="16" width="14" height="104" fill="${c||'#A86B3C'}"/></svg>`,
+ sofa:()=>`<svg viewBox="0 0 200 110"><rect x="18" width="164" height="62" rx="18" fill="#3E8EDE"/><rect x="10" y="48" width="180" height="40" rx="12" fill="#2F76C4"/><rect y="34" width="30" height="58" rx="12" fill="#3E8EDE"/><rect x="170" y="34" width="30" height="58" rx="12" fill="#3E8EDE"/><rect x="20" y="92" width="10" height="18" fill="#6E4528"/><rect x="170" y="92" width="10" height="18" fill="#6E4528"/></svg>`,
+ armoire:()=>`<svg viewBox="0 0 120 180"><rect width="120" height="170" rx="6" fill="#B9835A" stroke="#6E4528" stroke-width="3"/><line x1="60" y1="8" x2="60" y2="162" stroke="#6E4528" stroke-width="3"/><circle cx="52" cy="90" r="4" fill="#F3D27A"/><circle cx="68" cy="90" r="4" fill="#F3D27A"/><rect x="8" y="170" width="12" height="10" fill="#6E4528"/><rect x="100" y="170" width="12" height="10" fill="#6E4528"/></svg>`,
+ frigo:()=>`<svg viewBox="0 0 60 140"><rect x="1.5" y="1.5" width="57" height="137" rx="6" fill="#F4F8FB" stroke="#9AAAB8" stroke-width="3"/><line x1="2" y1="50" x2="58" y2="50" stroke="#9AAAB8" stroke-width="3"/><rect x="47" y="18" width="5" height="22" rx="2" fill="#9AAAB8"/><rect x="47" y="62" width="5" height="34" rx="2" fill="#9AAAB8"/></svg>`,
+ cuisiniere:()=>`<svg viewBox="0 0 70 80"><rect x="1.5" y="1.5" width="67" height="77" rx="4" fill="#E9ECEF" stroke="#7B8794" stroke-width="3"/><rect x="2" y="2" width="66" height="14" fill="#C9CFD5"/><circle cx="14" cy="9" r="3.5" fill="#333"/><circle cx="28" cy="9" r="3.5" fill="#333"/><circle cx="42" cy="9" r="3.5" fill="#333"/><circle cx="56" cy="9" r="3.5" fill="#333"/><rect x="10" y="26" width="50" height="40" rx="4" fill="#3B3F45"/><rect x="16" y="32" width="38" height="26" rx="3" fill="#F4A259" opacity=".55"/></svg>`,
+ evier:()=>`<svg viewBox="0 0 100 70"><path d="M58 14 v-10 h14 v5" fill="none" stroke="#7B8794" stroke-width="4"/><rect y="14" width="100" height="8" rx="2" fill="#B8C1CA"/><rect x="3" y="22" width="94" height="48" fill="#C98E5D"/><line x1="50" y1="24" x2="50" y2="68" stroke="#8C5A33" stroke-width="2"/><circle cx="44" cy="46" r="2.5" fill="#F3D27A"/><circle cx="56" cy="46" r="2.5" fill="#F3D27A"/></svg>`,
+};
+const e=(ch,x,y,s,z=2)=>({t:'e',ch,x,y,s,z});
+const sv=(k,x,y,w,z=2,a)=>({t:'s',k,x,y,w,z,a});
+const dv=(st,x,y,w,h,z=1)=>({t:'d',st,x,y,w,h,z});
+
+const ROOMS={
+ salon:{nom:'le salon',dans:'Dans le salon',
+  objs:[e('🪟',42,3,12,1),e('🖼️',12,6,8,1),e('🕰️',80,6,6,1),sv('sofa',6,31,26),dv('background:#9FD3C7;border-radius:50%',38,45,28,7,0),sv('table',44,40,16),dv('background:#8A5A35;border-radius:.5cqw',68,36,18,9,1),e('📺',71,25,12,2),e('🪴',89,33,9)],
+  spots:[['sur le canapé',16,31.4,6,3],['derrière le canapé',17,26.5,6,1],['devant le canapé',18,42,6.5,5],['à gauche du canapé',0,38.5,5,3],['sous la table',50,43.5,5,3],['sur la table',50,34.5,5.5,3],['entre le canapé et la table',36,40,6,3],['devant la télé',74,41,6.5,5]],
+  ilya:[['un canapé','🛋️'],['une table'],['une télé','📺'],['une plante','🪴'],['une fenêtre','🪟'],['un tableau','🖼️'],['une horloge','🕰️'],['un tapis']],
+  nope:[['un lit','🛏️'],['une baignoire','🛁'],['un frigo'],['une armoire'],['des chaises','🪑'],['un ordinateur','💻'],['une guitare','🎸'],['un ballon','⚽']]},
+ cuisine:{nom:'la cuisine',dans:'Dans la cuisine',
+  objs:[e('🪟',42,3,12,1),e('🕰️',22,6,6,1),sv('frigo',3,19,11),sv('cuisiniere',21,30,13),sv('evier',60,31,20),sv('table',40,35,20),e('🪑',32,36,8,3),e('🪑',56.5,36,8,3),e('🗑️',83,37,7,2),e('🪴',91,35,8)],
+  spots:[['sur la table',47,30,5.5,3],['sous la table',47.5,41,5,4],['sur le frigo',5.5,13.5,6,3],['entre le frigo et la cuisinière',14.6,39.5,5.4,3],['devant la cuisinière',23,40,6.5,5],["devant l'évier",66,40,6.5,5],['derrière la poubelle',84,35,5,1]],
+  ilya:[['un frigo'],['une cuisinière'],['un évier'],['une table'],['des chaises','🪑'],['une fenêtre','🪟'],['une horloge','🕰️'],['une poubelle','🗑️'],['une plante','🪴']],
+  nope:[['un canapé','🛋️'],['une télé','📺'],['un lit','🛏️'],['une douche','🚿'],['un tapis'],['un ordinateur','💻'],['une armoire'],['des livres','📚']]},
+ chambre:{nom:'la chambre',dans:'Dans la chambre',
+  objs:[e('🪟',40,3,12,1),e('🖼️',10,6,8,1),e('🛏️',2,20,27,2),e('🧸',7,34,6,3),e('👟',7,44.4,5,4),sv('armoire',85,21,12,1),dv('background:#9FD3C7;border-radius:50%',30,45,24,7,0),e('⚽',39,43.5,5,2),sv('table',52,34,20,2),e('💻',53,28,6.5,3),e('📚',66,28.5,5.5,3),e('🪑',63,36,8,4)],
+  spots:[['sur le lit',18,32.5,6,3],['devant le lit',16,43,6,5],['sous le bureau',55,40,5,5],['derrière le bureau',59.5,29.5,5,1],["à côté de l'armoire",78,33,6,3],["sur l'armoire",87,15.5,6,3],['à côté du ballon',45,43,5,3]],
+  ilya:[['un lit','🛏️'],['une armoire'],['un bureau'],['une chaise','🪑'],['un ordinateur','💻'],['des livres','📚'],['un ballon','⚽'],['un tapis'],['une fenêtre','🪟'],['un nounours','🧸'],['des baskets','👟']],
+  nope:[['une télé','📺'],['un frigo'],['une baignoire','🛁'],['un canapé','🛋️'],['une plante','🪴'],['une horloge','🕰️'],['une guitare','🎸'],['une douche','🚿']]},
+};
+const PIECES=[
+ {id:'chambre',nom:'la chambre',ic:'🛏️',r:1,c:1,ph:'La chambre est <b class="k3">en haut</b>, <b class="k3">à gauche</b>.'},
+ {id:'escalier',nom:"l'escalier",ic:'🪜',r:1,c:2,ph:"L'escalier est <b class=\"k1\">entre</b> la chambre <b class=\"k1\">et</b> la salle de bains."},
+ {id:'sdb',nom:'la salle de bains',ic:'🛁',r:1,c:3,ph:'La salle de bains est en haut, <b class="k2">à côté des</b> toilettes.'},
+ {id:'wc',nom:'les toilettes',ic:'🚽',r:1,c:4,ph:'Les toilettes sont en haut, <b class="k2">à droite de la</b> salle de bains.'},
+ {id:'entree',nom:"l'entrée",ic:'🚪',r:2,c:1,ph:"L'entrée est <b class=\"k3\">en bas</b>, <b class=\"k2\">à côté du</b> garage."},
+ {id:'salon',nom:'le salon',ic:'📺',r:2,c:2,ph:"Le salon est en bas, <b class=\"k1\">entre</b> l'entrée <b class=\"k1\">et</b> la salle à manger."},
+ {id:'sam',nom:'la salle à manger',ic:'🍽️',r:2,c:3,ph:'La salle à manger est en bas, <b class="k2">à gauche de la</b> cuisine.'},
+ {id:'cuisine',nom:'la cuisine',ic:'🍳',r:2,c:4,ph:'La cuisine est <b class="k3">en bas</b>, <b class="k3">à droite</b>.'},
+ {id:'garage',nom:'le garage',ic:'🚗',annex:'garage',ph:'Le garage est <b class="k2">à gauche de la</b> maison.'},
+ {id:'jardin',nom:'le jardin',ic:'🌳',annex:'garden',ph:'Le jardin est <b class="k2">à droite de la</b> maison.'},
+];
+
+/* ---------- utilidades ---------- */
+const $=s=>document.querySelector(s);
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+function speak(t){try{const u=new SpeechSynthesisUtterance(t.replace(/<[^>]+>/g,''));u.lang='fr-FR';u.rate=.9;const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('fr'));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u)}catch(e){}}
+function fam(t){if(/^(sur|sous|dans|devant|derrière|entre)\b/.test(t))return 1;if(/^(ici|là)$/.test(t))return 3;return 2}
+function color(t){const f=fam(t);return `<b class="k${f}">${t}</b>`}
+function negForm(item){const [art,...rest]=item.split(' ');const n=rest.join(' ');return (/^[aeiouéèêh]/i.test(n)?"d'":'de ')+n}
+function trap(t){
+  if(/^entre/.test(t))return null;
+  if(fam(t)===1){const m=t.match(/^(\S+) (le |la |l'|les )(.*)$/);if(!m)return null;
+    const map={'le ':'du ','la ':'de la ',"l'":"de l'",'les ':'des '};return `${m[1]} ${map[m[2]]}${m[3]}`}
+  if(/ du /.test(t))return t.replace(' du ',' de le ');
+  if(/ des /.test(t))return t.replace(' des ',' de les ');
+  return t.replace(/ de (la |l')/,' $1');
+}
+
+/* ---------- escena ---------- */
+function sceneHTML(key,cat,opt={}){
+  const R=ROOMS[key];let h=`<div class="scene" id="scene"><div class="floor"></div>`;
+  for(const o of R.objs){
+    if(o.t==='e')h+=`<span class="o" style="left:${o.x}cqw;top:${o.y}cqw;font-size:${o.s}cqw;z-index:${o.z}">${o.ch}</span>`;
+    else if(o.t==='s')h+=SVG[o.k]().replace('<svg',`<svg class="o" style="left:${o.x}cqw;top:${o.y}cqw;width:${o.w}cqw;z-index:${o.z}"`);
+    else h+=`<div class="o" style="left:${o.x}cqw;top:${o.y}cqw;width:${o.w}cqw;height:${o.h}cqw;z-index:${o.z};${o.st}"></div>`;
+  }
+  if(cat)h+=`<span class="o cat" style="left:${cat[1]}cqw;top:${cat[2]}cqw;font-size:${cat[3]}cqw;z-index:${cat[4]}">🐱</span>`;
+  h+=`<div class="roomname">${cap(R.nom)}</div>`;
+  if(opt.curtain)h+=`<div class="curtain">🙈 Mémoire !<small>Qu'est-ce qu'il y a ${R.dans.replace('Dans','dans')} ?</small></div>`;
+  return h+'</div>';
+}
+function houseHTML(hl){
+  let cells='';
+  for(const p of PIECES.filter(p=>!p.annex)){
+    const lab=S.view==='pieces'&&S.houseMode==='explore'&&p.shown?`<span class="lb">${p.nom}</span>`:'';
+    cells+=`<button class="room${hl===p.id?' hl':''}" data-p="${p.id}" style="grid-row:${p.r};grid-column:${p.c}" aria-label="pièce"><span class="ic">${p.ic}</span>${lab}</button>`;
+  }
+  const an=PIECES.filter(p=>p.annex).map(p=>{
+    const lab=S.view==='pieces'&&S.houseMode==='explore'&&p.shown?`<span class="lb">${p.nom}</span>`:'';
+    return `<button class="room annex ${p.annex}${hl===p.id?' hl':''}" data-p="${p.id}" aria-label="pièce"><span class="ic">${p.annex==='garden'?'🌳🌷':p.ic}</span>${lab}</button>`}).join('');
+  return `<div class="house" id="house"><div class="roof"></div><div class="body">${cells}</div>${an}</div>`;
+}
+
+/* ---------- equipos ---------- */
+function renderTeams(){
+  let h='';for(let i=0;i<S.nTeams;i++){const t=TEAMS[i];
+    h+=`<div class="team${i===S.active?' active':''}" id="team${i}"><span class="nm">${t.e} ${t.n}</span><button class="mini" data-d="-1" data-t="${i}" aria-label="moins">−</button><span class="sc">${S.scores[i]}</span><button class="mini" data-d="1" data-t="${i}" aria-label="plus">+</button></div>`}
+  $('#teams').innerHTML=h;
+  [2,3,4].forEach(n=>$('#t'+n).setAttribute('aria-pressed',S.nTeams===n));
+  $('#tmr').setAttribute('aria-pressed',S.timer);$('#tmr').textContent=S.timer?'20 s':'off';
+}
+$('#teams').addEventListener('click',ev=>{const b=ev.target.closest('.mini');if(!b)return;const i=+b.dataset.t;S.scores[i]=Math.max(0,S.scores[i]+ +b.dataset.d);save();renderTeams()});
+document.querySelectorAll('.tset [data-n]').forEach(b=>b.onclick=()=>{S.nTeams=+b.dataset.n;if(S.active>=S.nTeams)S.active=0;save();renderTeams()});
+$('#tmr').onclick=()=>{S.timer=!S.timer;save();renderTeams();if(!S.timer)stopTimer()};
+function award(ok){if(!ok)return;S.scores[S.active]++;save();renderTeams();const el=$('#team'+S.active);el.classList.add('bump')}
+function nextTeam(){S.active=(S.active+1)%S.nTeams;save();renderTeams()}
+function teamLine(){const t=TEAMS[S.active];return `<div class="kicker">C'est au tour de : ${t.e} ${t.n}</div>`}
+
+/* ---------- temporizador ---------- */
+let tmrId=null;
+function startTimer(){stopTimer();if(!S.timer)return;const bar=$('#bar');if(!bar)return;const t0=performance.now(),D=20000;
+  const step=now=>{const p=Math.max(0,1-(now-t0)/D);bar.style.transform=`scaleX(${p})`;bar.style.background=p<.25?'var(--ko)':'var(--g3)';if(p>0)tmrId=requestAnimationFrame(step)};tmrId=requestAnimationFrame(step)}
+function stopTimer(){if(tmrId)cancelAnimationFrame(tmrId);tmrId=null}
+const timerHTML=()=>S.timer?'<div class="timer"><i id="bar"></i></div>':'';
+
+/* ---------- preguntas ---------- */
+let Q=null, lastKey='';
+function genIlya(){
+  const key=pick(Object.keys(ROOMS));const R=ROOMS[key];const yes=Math.random()<.5;const it=pick(yes?R.ilya:R.nope);
+  const item=it[0];const pos=`Oui, il y a ${item}.`;const neg=`Non, il n'y a pas ${negForm(item)}.`;
+  return {type:'ilya',key,kicker:R.dans+'…',prompt:`… il y a ${item} ? ${it[1]||''}`,opts:shuffle([pos,neg]),right:yes?pos:neg,
+    expl:yes?`Oui ! ${R.dans}, il y a ${item}.`:`Non ! ${R.dans}, il n'y a pas <u>${negForm(item)}</u>. <br><small>un / une / des → <b>de</b> (d')</small>`};
+}
+function genMinou(){
+  const key=pick(Object.keys(ROOMS));const R=ROOMS[key];const sp=pick(R.spots);const c=sp[0];
+  const others=shuffle(R.spots.filter(s=>s[0]!==c).map(s=>s[0]));const tr=trap(c);
+  const opts=[c];if(tr&&Math.random()<.8)opts.push(tr);while(opts.length<3)opts.push(others.pop());
+  const f=fam(c);const why=f===1?'sans «&nbsp;de&nbsp;»':'avec «&nbsp;de&nbsp;»';
+  return {type:'minou',key,spot:sp,kicker:cap(R.nom),prompt:'Où est Minou ?',opts:shuffle(opts).map(o=>`Il est ${o}.`),right:`Il est ${c}.`,
+    expl:`Minou est ${color(c)}. <small>(${why})</small>`,trapTxt:tr?`Il est ${tr}.`:null};
+}
+function genPiece(){
+  const p=pick(PIECES);const others=shuffle(PIECES.filter(x=>x.id!==p.id)).slice(0,2);
+  return {type:'piece',hl:p.id,kicker:'La maison',prompt:"C'est quelle pièce ?",opts:shuffle([p,...others].map(x=>`C'est ${x.nom}.`)),right:`C'est ${p.nom}.`,expl:p.ph};
+}
+function newQ(kind){
+  let q,guard=0;do{q=kind==='ilya'?genIlya():kind==='minou'?genMinou():kind==='piece'?genPiece():pick([genIlya,genMinou,genPiece])();guard++}while(q.prompt+q.right===lastKey&&guard<10);
+  lastKey=q.prompt+q.right;Q=q;Q.done=false;Q.mem=false;renderQ();
+}
+function renderQ(){
+  const q=Q;
+  if(q.type==='piece')$('#stage').innerHTML=houseHTML(q.hl);
+  else $('#stage').innerHTML=sceneHTML(q.key,q.type==='minou'?q.spot:null,{curtain:q.mem});
+  let ex='';
+  if(q.type==='ilya'&&S.view==='ilya')ex=`<div class="row"><button class="btn soft" id="memo" aria-pressed="${S.memo}">🙈 Mode mémoire : ${S.memo?'oui':'non'}</button></div>`;
+  $('#panel').innerHTML=`${teamLine()}${timerHTML()}<div class="kicker">${q.kicker}</div><div class="prompt">${q.prompt}</div>
+   <div class="opts">${q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${o}</button>`).join('')}</div><div id="fbx"></div>${ex}${legend()}`;
+  $('#panel').querySelectorAll('.opt').forEach(b=>b.onclick=()=>answer(b));
+  const m=$('#memo');if(m)m.onclick=()=>{S.memo=!S.memo;newQ('ilya')};
+  if(q.type==='ilya'&&S.view==='ilya'&&S.memo&&!q.mem){memoryRun();return}
+  startTimer();
+}
+let memId=null;
+function memoryRun(){
+  clearInterval(memId);const opts=[...document.querySelectorAll('.opt')];opts.forEach(o=>o.disabled=true);
+  const pr=document.querySelector('.prompt');const real=pr.innerHTML;pr.innerHTML='Regardez bien la pièce… 👀';
+  let n=8;const sc=$('#scene');sc.insertAdjacentHTML('beforeend',`<div class="count" id="cnt">${n}</div>`);
+  memId=setInterval(()=>{n--;const c=$('#cnt');if(!c){clearInterval(memId);return}
+    if(n>0){c.textContent=n;return}
+    clearInterval(memId);Q.mem=true;c.remove();sc.insertAdjacentHTML('beforeend',`<div class="curtain">🙈 Mémoire !<small>${ROOMS[Q.key].dans}… ?</small></div>`);
+    pr.innerHTML=real;opts.forEach(o=>o.disabled=false);startTimer()},1000);
+}
+function answer(b){
+  if(Q.done)return;Q.done=true;stopTimer();const val=b.textContent;const ok=val===Q.right;
+  $('#panel').querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.textContent===Q.right)x.classList.add('right');else if(x===b)x.classList.add('wrong');else x.classList.add('dim')});
+  let extra='';if(!ok&&Q.trapTxt&&val===Q.trapTxt)extra='<br><small>Attention au piège : '+(fam(Q.spot[0])===1?'pas de «&nbsp;de&nbsp;» ici !':'il faut «&nbsp;de&nbsp;» + article !')+'</small>';
+  $('#fbx').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?'✓ Bravo ! +1 point':'✗ Oh non…'}${extra}<span class="say">${Q.expl}</span></div>
+   <div class="row" style="margin-top:10px"><button class="btn soft" id="say">🔊 Écouter</button><button class="btn big" id="next">Question suivante →</button></div>`;
+  if(Q.type==='piece'){const r=document.querySelector(`.room[data-p="${Q.hl}"]`);r.classList.remove('hl');r.classList.add(ok?'good':'bad');const p=PIECES.find(p=>p.id===Q.hl);r.insertAdjacentHTML('beforeend',`<span class="lb">${p.nom}</span>`)}
+  if(Q.mem){const c=document.querySelector('.curtain');if(c)c.remove()}
+  award(ok);
+  $('#say').onclick=()=>speak(Q.type==='minou'?'Minou est '+Q.spot[0]:Q.right);
+  $('#next').onclick=()=>{nextTeam();newQ(S.view==='defi'?'mix':S.view==='minou'?'minou':S.view==='ilya'?'ilya':'piece')};
+}
+function legend(){return `<div class="legend"><span class="pill" style="background:var(--g1)">sur · sous · dans · devant · derrière · entre</span><span class="pill" style="background:var(--g2)">à côté / à droite / à gauche / au fond / au milieu / en face + DE</span><span class="pill" style="background:var(--g3)">ici · là · en haut · en bas</span></div>`}
+
+/* ---------- pestaña Les pièces ---------- */
+let quizP=null;
+function renderPieces(){
+  stopTimer();
+  $('#stage').innerHTML=houseHTML(S.houseMode==='quiz'&&quizP&&quizP.done?null:null);
+  const head=`<div class="row"><button class="btn ${S.houseMode==='explore'?'':'soft'}" id="mExp">👀 Découvrir</button><button class="btn ${S.houseMode==='quiz'?'':'soft'}" id="mQuiz">👉 Montre-moi !</button><button class="btn soft" id="mQ3">❓ C'est quelle pièce ?</button></div>`;
+  if(S.houseMode==='explore'){
+    $('#panel').innerHTML=`${head}<div class="kicker">Découvrir</div><div class="prompt">Clique sur une pièce pour la découvrir.</div><div id="info" class="fb ok" hidden></div><div class="row"><button class="btn soft" id="hideAll">Cacher les noms</button><button class="btn soft" id="showAll">Montrer tout</button></div>${legend()}`;
+  }else{
+    if(!quizP||quizP.done)quizP={p:pick(PIECES),done:false};
+    $('#panel').innerHTML=`${head}${teamLine()}${timerHTML()}<div class="kicker">Montre-moi…</div><div class="prompt">${cap(quizP.p.nom)} ! 👉</div><div id="info"></div>${legend()}`;
+    startTimer();
+  }
+  $('#mExp').onclick=()=>{S.houseMode='explore';renderPieces()};
+  $('#mQuiz').onclick=()=>{S.houseMode='quiz';quizP=null;renderPieces()};
+  $('#mQ3').onclick=()=>{S.houseMode='q3';newQ('piece')};
+  const ha=$('#hideAll');if(ha){ha.onclick=()=>{PIECES.forEach(p=>p.shown=false);renderPieces()};$('#showAll').onclick=()=>{PIECES.forEach(p=>p.shown=true);renderPieces()}}
+  $('#house').addEventListener('click',ev=>{
+    const r=ev.target.closest('.room');if(!r)return;const p=PIECES.find(x=>x.id===r.dataset.p);
+    if(S.houseMode==='explore'){p.shown=true;renderPieces();const i=$('#info');i.hidden=false;i.innerHTML=`<span class="say" style="margin:0">${cap(p.nom)}</span>${p.ph}`;speak(p.nom)}
+    else if(!quizP.done){quizP.done=true;stopTimer();const ok=p.id===quizP.p.id;
+      r.classList.add(ok?'good':'bad');r.insertAdjacentHTML('beforeend',`<span class="lb">${p.nom}</span>`);
+      if(!ok){const g=document.querySelector(`.room[data-p="${quizP.p.id}"]`);g.classList.add('good');g.insertAdjacentHTML('beforeend',`<span class="lb">${quizP.p.nom}</span>`)}
+      award(ok);
+      $('#info').innerHTML=`<div class="fb ${ok?'ok':'ko'}">${ok?'✓ Bravo ! +1 point':'✗ Non, ça c\'est '+p.nom+'.'}<span class="say">${quizP.p.ph}</span></div><div class="row" style="margin-top:10px"><button class="btn soft" id="say">🔊 Écouter</button><button class="btn big" id="next">Pièce suivante →</button></div>`;
+      $('#say').onclick=()=>speak(quizP.p.ph);$('#next').onclick=()=>{nextTeam();renderPieces()}}
+  });
+}
+
+/* ---------- pestañas ---------- */
+function show(v){
+  clearInterval(memId);
+  S.view=v;document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.v===v));
+  if(location.hash.slice(1)!==v)history.replaceState(null,'','#'+v);
+  if(v==='pieces'){if(S.houseMode==='q3')S.houseMode='explore';renderPieces()}
+  else newQ(v==='defi'?'mix':v);
+}
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>show(t.dataset.v));
+window.addEventListener('hashchange',()=>{const v=location.hash.slice(1);if(['pieces','ilya','minou','defi'].includes(v)&&v!==S.view)show(v)});
+renderTeams();
+const h0=location.hash.slice(1);show(['pieces','ilya','minou','defi'].includes(h0)?h0:'pieces');
+</script>
+
+</body>
+</html>
