@@ -61,6 +61,7 @@ h1,h2{font-family:"Gochi Hand",cursive;font-weight:400;margin:0}
 .ptitle h2::before{content:"";position:absolute;inset:8px -4px 2px -6px;background:var(--c,var(--rose));opacity:.75;z-index:-1;
   border-radius:3px;transform:rotate(-1.2deg);
   -webkit-mask:linear-gradient(90deg,transparent 0,#000 6px calc(100% - 6px),transparent 100%)}
+.kind.crit{background:var(--c,var(--rose));border-style:solid;transform:rotate(-2deg)}
 .kind{font-size:15px;background:#fff;border:2px dashed var(--ink2);border-radius:20px;padding:2px 12px;transform:rotate(2deg);margin-top:12px;white-space:nowrap}
 .washi{position:absolute;height:28px;width:120px;opacity:.85;background:repeating-linear-gradient(45deg,var(--w1) 0 8px,var(--w2) 8px 16px);
   box-shadow:0 1px 2px rgba(0,0,0,.08);pointer-events:none}
@@ -193,6 +194,22 @@ textarea.ecrit{width:100%;min-height:260px;resize:vertical;border:2.5px solid va
 .msg{background:#fff;border:2px dashed var(--ink2);padding:8px 14px;border-radius:10px;font-size:18px}
 .msg.good{border-color:var(--ok)}
 
+/* criterios */
+.critcard{background:#fff;padding:14px 18px;margin:0 0 18px;position:relative}
+.critcard h3{font-family:"Gochi Hand";font-weight:400;font-size:26px;margin:0}
+.critcard .code{display:inline-block;background:var(--cc);border:2px solid var(--ink);border-radius:10px;padding:0 10px;margin-right:8px;font-size:20px}
+.evid{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.evid span{font-size:16px;background:#faf7ff;border:1.5px dashed var(--ink2);border-radius:10px;padding:1px 10px}
+.evid b{color:#fff;background:var(--sc);border-radius:7px;padding:0 6px;margin-left:4px;font-weight:400}
+.moda{display:inline-flex;align-items:center;gap:10px;font-size:20px;margin:4px 0}
+.moda .lvl{color:#fff;background:var(--sc);border-radius:12px;padding:2px 14px;font-family:"Gochi Hand";font-size:24px}
+.critcard details{margin-top:8px}
+.critcard summary{cursor:pointer;font-size:17px;color:var(--pen)}
+.rub{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:8px}
+.rub div{font-family:system-ui,sans-serif;font-size:12.5px;line-height:1.35;border:1.5px solid #ddd5e8;border-radius:8px;padding:6px 8px;background:#fdfcff;color:var(--ink2)}
+.rub div b{display:block;font-size:13px;margin-bottom:3px;color:var(--ink)}
+.rub div.on{border:2.5px solid var(--sc);background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--sc)}
+@media (max-width:760px){.rub{grid-template-columns:1fr}}
 /* doodles y confeti */
 .doodle{position:absolute;pointer-events:none;opacity:.9}
 .confetti{position:fixed;top:-30px;font-size:24px;pointer-events:none;z-index:50;animation:fall linear forwards}
@@ -643,7 +660,7 @@ const FACES = [
 const PAGES = [
   { id:"cover", type:"cover", tab:"Mon carnet", emo:"📒", col:"rose" },
 
-  { id:"bonjour", type:"ecoute", tab:"Bonjour", emo:"🎧", col:"rose", kind:"🎧 J'écoute", skill:"Compréhension orale",
+  { id:"bonjour", crit:"1.1", type:"ecoute", tab:"Bonjour", emo:"🎧", col:"rose", kind:"🎧 J'écoute", skill:"Compréhension orale",
     titre:"Bonjour ou bonsoir ?", sticker:"🌞",
     consigne:"Mets ton casque. Écoute et choisis la bonne image.",
     es:"Ponte los auriculares. Escucha y elige la imagen correcta.",
@@ -656,7 +673,7 @@ const PAGES = [
       { say:[["malik","Salut, Nora ! À demain !"]], opts:[{e:"📅➡️",t:"On se voit demain"},{e:"🗓️1️⃣",t:"On se voit lundi"},{e:"🌇🕗",t:"On se voit ce soir"}], ok:0 }
     ] },
 
-  { id:"cava", type:"ecoute", tab:"Ça va ?", emo:"🎧", col:"lav", kind:"🎧 J'écoute", skill:"Compréhension orale",
+  { id:"cava", crit:"1.1", type:"ecoute", tab:"Ça va ?", emo:"🎧", col:"lav", kind:"🎧 J'écoute", skill:"Compréhension orale",
     titre:"Ça va ?", sticker:"💜",
     consigne:"Malik demande « Ça va ? » à ses amis. Écoute la réponse et choisis la bonne tête.",
     es:"Malik pregunta «¿Qué tal?» a sus amigos. Escucha la respuesta y elige la cara correcta.",
@@ -669,7 +686,7 @@ const PAGES = [
       { say:[["malik","Bonjour, madame ! Comment allez-vous ?"],["dubois","Ça va bien, merci. Et toi ?"]], ok:1 }
     ] },
 
-  { id:"theo", type:"dialogue", tab:"Le nouveau", emo:"🎧", col:"menthe", kind:"🎧 J'écoute", skill:"Compréhension orale",
+  { id:"theo", crit:"1.1", type:"dialogue", tab:"Le nouveau", emo:"🎧", col:"menthe", kind:"🎧 J'écoute", skill:"Compréhension orale",
     titre:"Le premier jour de Théo", sticker:"🧢",
     consigne:"Écoute la conversation dans la cour. Tu peux l'écouter plusieurs fois. Puis réponds aux questions.",
     es:"Escucha la conversación en el patio. Puedes escucharla varias veces. Después contesta a las preguntas.",
@@ -697,7 +714,7 @@ const PAGES = [
       { q:"À la fin, Mme Dubois dit :", opts:["« Bonne nuit, les enfants ! »","« Au revoir, les enfants ! »","« Bonjour, les enfants ! »"], ok:2 }
     ] },
 
-  { id:"appeler", type:"choix", tab:"S'appeler", emo:"🏷️", col:"peche", kind:"✏️ J'écris", skill:"Langue : s'appeler",
+  { id:"appeler", crit:"2.3", type:"choix", tab:"S'appeler", emo:"🏷️", col:"peche", kind:"✏️ J'écris", skill:"Langue : s'appeler",
     titre:"Les étiquettes de Nora", sticker:"🏷️",
     consigne:"Nora écrit des étiquettes pour ses copains. Choisis la bonne forme du verbe s'appeler.",
     es:"Nora escribe etiquetas para sus compañeros. Elige la forma correcta del verbo s'appeler.",
@@ -711,7 +728,7 @@ const PAGES = [
       { q:"Mes chats ___ Choco et Pistache.", opts:["s'appelle","s'appelent","s'appellent"], ok:2 }
     ] },
 
-  { id:"journal", type:"texte", tab:"Être, avoir", emo:"📔", col:"citron", kind:"✏️ J'écris", skill:"Langue : être et avoir",
+  { id:"journal", crit:"2.3", type:"texte", tab:"Être, avoir", emo:"📔", col:"citron", kind:"✏️ J'écris", skill:"Langue : être et avoir",
     titre:"Le journal intime de Nora", sticker:"🔐",
     consigne:"Lis le journal de Nora et choisis la bonne forme de être ou avoir.",
     es:"Lee el diario de Nora y elige la forma correcta de être o avoir.",
@@ -724,7 +741,7 @@ const PAGES = [
       "Ce soir, j'",{opts:["suis","ai","a"],ok:1}," froid : il fait 18 degrés à Tenerife ! Bonne nuit, mon journal. Tu ",{opts:["as","es","est"],ok:1}," mon meilleur ami."
     ] },
 
-  { id:"stickers", type:"ecoute", tab:"Stickers", emo:"🎧", col:"ciel", kind:"🎧 J'écoute", skill:"Compréhension orale",
+  { id:"stickers", crit:"1.1", type:"ecoute", tab:"Stickers", emo:"🎧", col:"ciel", kind:"🎧 J'écoute", skill:"Compréhension orale",
     titre:"Les stickers de Nora", sticker:"⭐",
     consigne:"Écoute la phrase et colle le bon sticker : choisis l'image qui correspond.",
     es:"Escucha la frase y pega la pegatina correcta: elige la imagen que corresponde.",
@@ -739,7 +756,7 @@ const PAGES = [
       { say:[["dubois","Elles sont de Paris."]], opts:[{e:"🗼",t:"Paris"},{e:"🌋",t:"Tenerife (le Teide)"},{e:"🏖️",t:"la plage"}], ok:0, hide:true }
     ] },
 
-  { id:"non", type:"ordre", tab:"Non !", emo:"🙅", col:"menthe", kind:"✏️ J'écris", skill:"Langue : la négation",
+  { id:"non", crit:"2.3", type:"ordre", tab:"Non !", emo:"🙅", col:"menthe", kind:"✏️ J'écris", skill:"Langue : la négation",
     titre:"Pistache dit toujours NON !", sticker:"🐱",
     consigne:"Pistache, le chat de Nora, n'est jamais d'accord. Clique sur les mots pour écrire sa phrase à la forme négative. Attention : il y a des mots en trop !",
     es:"Pistache, el gato de Nora, nunca está de acuerdo. Pulsa las palabras para escribir su frase en negativa. ¡Cuidado: sobran palabras! (Pulsa una palabra de la línea para quitarla).",
@@ -753,7 +770,7 @@ const PAGES = [
       { aff:"Nous sommes contents.", tiles:["Nous","ne","sommes","pas","contents","n'"], ans:"Nous ne sommes pas contents" }
     ] },
 
-  { id:"moi", type:"dessin", tab:"Et moi ?", emo:"🎨", col:"lav", kind:"🎨 Je crée", skill:"Production écrite",
+  { id:"moi", crit:"2.2", type:"dessin", tab:"Et moi ?", emo:"🎨", col:"lav", kind:"🎨 Je crée", skill:"Production écrite",
     titre:"Et toi ? Ton autoportrait", sticker:"🎨",
     consigne:"Dessine ton portrait dans le cadre. Puis présente-toi à Nora : salue-la, dis comment tu t'appelles, ton âge, d'où tu es, comment tu es… et une chose que tu n'as pas !",
     es:"Dibuja tu retrato en el marco. Después preséntate a Nora: salúdala, di cómo te llamas, tu edad, de dónde eres, cómo eres… ¡y algo que no tienes!",
@@ -762,6 +779,11 @@ const PAGES = [
   { id:"bilan", type:"bilan", tab:"Bilan", emo:"🏁", col:"citron", titre:"Mon album de stickers" }
 ];
 
+/* Criterios del currículo de Canarias (Decreto 30/2023, Segunda Lengua Extranjera, 1º ESO)
+   y descriptores de la rúbrica de la Consejería (columnas IN / SU-BI / NT / SB). */
+const CRITS = {"1.1": {"fr": "Je comprends des textes oraux", "es": "Localizar información pertinente, identificar el sentido global y las ideas principales, e interpretar el contenido de textos orales muy breves y sencillos sobre temas frecuentes y cotidianos, de relevancia personal y próximos a su experiencia, expresados de forma muy clara y sencilla a través de diversos soportes, utilizando una o más lenguas además de las familiares con el fin de construir conocimiento y responder a necesidades comunicativas concretas.", "rub": ["Localiza información poco pertinente, identifica con escasa precisión el sentido global y las ideas principales, e interpreta con errores el contenido de textos orales muy breves y sencillos sobre temas frecuentes y cotidianos, de relevancia personal y próximos a su experiencia, expresados de forma muy clara y sencilla a través de diversos soportes, utilizando una o más lenguas además de las familiares lo que le impide construir conocimiento y responder a necesidades comunicativas concretas.", "Localiza información pertinente, identifica el sentido global y las ideas principales, e interpreta el contenido de textos orales muy breves y sencillos sobre temas frecuentes y cotidianos, de relevancia personal y próximos a su experiencia, expresados de forma muy clara y sencilla a través de diversos soportes, utilizando una o más lenguas además de las familiares con el fin de construir conocimiento y responder a necesidades comunicativas concretas", "Localiza información muy pertinente, identifica con destacable precisión el sentido global y las ideas principales, e interpreta con corrección el contenido de textos orales muy breves y sencillos sobre temas frecuentes y cotidianos, de relevancia personal y próximos a su experiencia, expresados de forma muy clara y sencilla a través de diversos soportes, utilizando una o más lenguas además de las familiares con el fin de construir conocimiento y responder a necesidades comunicativas concretas", "Localiza información totalmente pertinente, identifica con máxima precisión el sentido global y las ideas principales, e interpreta con destacable corrección el contenido de textos orales muy breves y sencillos sobre temas frecuentes y cotidianos, de relevancia personal y próximos a su experiencia, expresados de forma muy clara y sencilla a través de diversos soportes, utilizando una o más lenguas además de las familiares con el fin de construir conocimiento y responder a necesidades comunicativas concretas."]}, "2.3": {"fr": "J'applique ce que je sais pour écrire", "es": "Seleccionar y aplicar de manera guiada conocimientos y estrategias elementales en la elaboración de textos muy sencillos, comprensibles, coherentes, haciendo uso de su repertorio lingüístico y usando, con ayuda, los recursos físicos o digitales más adecuados en función de la tarea y las necesidades de cada momento, para planificar, producir y seguir progresando en el proceso de aprendizaje.", "rub": ["Selecciona y aplica de manera guiada con mínima coherencia conocimientos y estrategias elementales en la elaboración de textos muy sencillos, comprensibles, coherentes, haciendo uso poco pertinente de su repertorio lingüístico y usando, siempre con ayuda, los recursos físicos o digitales más adecuados en función de la tarea y las necesidades de cada momento, lo que le impide planificar, producir y seguir progresando en el proceso de aprendizaje mediante la realización de tareas metacognitivas de retroalimentación.", "Selecciona y aplica de manera guiada conocimientos y estrategias elementales en la elaboración de textos muy sencillos, comprensibles, coherentes, haciendo uso de su repertorio lingüístico y usando, con ayuda, los recursos físicos o digitales más adecuados en función de la tarea y las necesidades de cada momento, para planificar, producir y seguir progresando en el proceso de aprendizaje mediante la realización de tareas metacognitivas de retroalimentación.", "Selecciona y aplica de manera guiada con coherencia conocimientos y estrategias elementales en la elaboración de textos muy sencillos, comprensibles, coherentes, haciendo uso pertinente de su repertorio lingüístico y usando, ocasionalmente con ayuda, los recursos físicos o digitales más adecuados en función de la tarea y las necesidades de cada momento, para planificar, producir y seguir progresando en el proceso de aprendizaje mediante la realización de tareas metacognitivas de retroalimentación.", "Selecciona y aplica de manera guiada con seguridad y plena confianza conocimientos y estrategias elementales en la elaboración de textos muy sencillos, comprensibles, coherentes, haciendo uso muy pertinente de su repertorio lingüístico y usando, rara vez con ayuda, los recursos físicos o digitales más adecuados en función de la tarea y las necesidades de cada momento, para planificar, producir y seguir progresando en el proceso de aprendizaje mediante la realización de tareas metacognitivas de retroalimentación."]}, "2.2": {"fr": "J'écris un texte simple", "es": "Organizar y redactar de forma guiada textos propios muy sencillos, breves y comprensibles que versen sobre asuntos cotidianos y frecuentes, haciéndolo con claridad, coherencia y adecuación a la situación comunicativa propuesta, siguiendo pautas establecidas y mostrando aprecio por las producciones de los demás, así como empleando herramientas analógicas y digitales, con el fin de responder a propósitos comunicativos concretos.", "rub": ["Organiza y redacta de forma guiada con gran dificultad textos propios, muy sencillos, breves y comprensibles que versen sobre asuntos cotidianos y frecuentes, haciéndolo con poca claridad, coherencia, y adecuación a la situación comunicativa propuesta, siguiendo pautas establecidas y mostrando con poco interés aprecio por las producciones de los demás, así como empleando herramientas analógicas y digitales únicamente si se le indica, de modo que presenta dificultades para responder a propósitos comunicativos concretos.", "Organiza y redacta de forma guiada textos propios, muy sencillos, breves y comprensibles que versen sobre asuntos cotidianos y frecuentes, haciéndolo con claridad, coherencia, y adecuación a la situación comunicativa propuesta, siguiendo pautas establecidas y mostrando aprecio por las producciones de los demás, así como empleando herramientas analógicas y digitales, con el fin de responder a propósitos comunicativos concretos.", "Organiza y redacta de forma guiada con facilidad textos propios, muy sencillos, breves y comprensibles que versen sobre asuntos cotidianos y frecuentes, haciéndolo con gran claridad, coherencia, y adecuación a la situación comunicativa propuesta, siguiendo pautas establecidas y mostrando con gran interés aprecio por las producciones de los demás, así como empleando herramientas analógicas y digitales habitualmente por iniciativa propia, con el fin de responder a propósitos comunicativos concretos.", "Organiza y redacta de forma guiada con facilidad destacable textos propios, muy sencillos, breves y comprensibles que versen sobre asuntos cotidianos y frecuentes, haciéndolo con excelente claridad, coherencia, y adecuación a la situación comunicativa propuesta, siguiendo pautas establecidas y mostrando con máximo interés aprecio por las producciones de los demás, así como empleando herramientas analógicas y digitales siempre por iniciativa propia, con el fin de responder a propósitos comunicativos concretos."]}};
+const RUBCOL = l => [0,1,1,2,3][l];          // IN→IN, SU/BI→SU-BI, NT→NT, SB→SB
+const RUBHEAD = ["IN","SU · BI","NT","SB"];
 const LEVELS = [
   {k:"IN", fr:"Courage !", es:"Insuficiente", c:"#d9577a", e:"🌱"},
   {k:"SU", fr:"Ça avance !", es:"Suficiente", c:"#e39b4c", e:"🌼"},
@@ -868,7 +890,7 @@ function render(){
   if(p.type==="cover") loadVoices();
 }
 function head(p){
-  return `<div class="ptitle"><h2>${esc(p.titre)}</h2>${p.kind?`<span class="kind">${esc(p.kind)}</span>`:""}</div>
+  return `<div class="ptitle"><h2>${esc(p.titre)}</h2>${p.kind?`<span class="kind">${esc(p.kind)}</span>`:""}${p.crit?`<span class="kind crit" title="${esc(CRITS[p.crit].es)}">Critère ${p.crit}</span>`:""}</div>
   <div class="postit"><span class="who emo">${p.type==="ordre"?"🐱":p.type==="dessin"?"🎨":"👧🏽"}</span><p>${esc(p.consigne)}</p><span class="es">${esc(p.es)}</span></div>
   ${p.memo?`<div class="postit memo">${p.memo}</div>`:""}`;
 }
@@ -1033,17 +1055,36 @@ function rBilan(p){
   const album = pages.map(q => {
     if(q.type==="dessin") return `<div class="sticker" style="--sc:#9d84d8"><span class="emo">${q.sticker}</span><span class="t">${esc(q.titre)}</span><span class="lv">à lire par la prof</span></div>`;
     const s = score(q), L = LEVELS[s.lvl];
-    return `<div class="sticker" style="--sc:${L.c}"><span class="emo">${q.sticker}</span><span class="t">${esc(q.titre)}</span><span class="lv">${L.k} · ${L.fr}</span></div>`;
+    return `<div class="sticker" style="--sc:${L.c}"><span class="emo">${q.sticker}</span><span class="t">${esc(q.titre)}</span><span class="t" style="color:var(--ink2);font-size:14px">Critère ${q.crit}</span><span class="lv">${L.k} · ${L.fr}</span></div>`;
   }).join("");
   const autos = [["😍","J'ai adoré !"],["🙂","C'était bien."],["😐","Bof…"],["😕","C'était difficile."]];
   return `<div class="ptitle"><h2>${esc(p.titre)}</h2></div>${doodle("star","right:40px;top:26px")}${doodle("heart","right:110px;top:60px;transform:rotate(18deg)")}
   <div class="postit"><span class="who emo">👧🏽</span><p>Merci, ${esc(S.id.prenom)} ! Grâce à toi, mon carnet est complet. Voici tes stickers !</p><span class="es">¡Gracias! Gracias a ti, mi cuaderno está completo. ¡Aquí tienes tus pegatinas!</span></div>
   <div class="album">${album}</div>
+  <h2 style="font-size:34px;margin:6px 0 12px">Mes critères <span class="es" style="display:inline;font-size:18px">· Mis criterios: el nivel más repetido de cada criterio</span></h2>
+  ${Object.keys(CRITS).map(critCard).join("")}
   <p style="margin:0">Et toi, tu as aimé le carnet de Nora ?<span class="es">Y a ti, ¿te ha gustado el cuaderno de Nora?</span></p>
   <div class="faces">${autos.map(([e,t],i)=>`<button type="button" class="opt card${S.auto===i?" sel":""}" data-auto="${i}" style="flex:0 1 140px"><span class="emo">${e}</span><span class="lab">${t}</span></button>`).join("")}</div>
   <div class="postit memo" style="margin-top:22px"><b>📤 Dernière étape</b> : crée ton PDF et dépose-le dans le devoir sur Google Classroom.<span class="es">Último paso: crea tu PDF y entrégalo en la tarea de Google Classroom.</span></div>
   <div class="foot"><button class="btn" id="pdfBtn" data-pdf ${S.auto==null?"disabled":""}>Mon PDF 📄</button><span class="hint">${S.auto==null?"Choisis d'abord une tête.<span class='es'>Elige primero una cara.</span>":""}</span></div>
   <div id="pdfMsg" class="pdfmsg"></div>`;
+}
+
+function critCard(k){
+  const C = CRITS[k], pages = critPages(k), teacher = pages.some(p=>p.type==="dessin");
+  const m = teacher ? -1 : critMode(k), L = m>=0 ? LEVELS[m] : null;
+  const ev = pages.map(p => { if(p.type==="dessin") return `<span>${p.emo} ${esc(p.titre)}</span>`; const l = score(p).lvl; return `<span>${p.emo} ${esc(p.titre)}<b style="--sc:${LEVELS[l].c}">${LEVELS[l].k}</b></span>`; }).join("");
+  const col = m>=0 ? RUBCOL(m) : -1;
+  return `<div class="critcard sketch${k==="2.3"?"2":""}" style="--cc:${COL[pages[0].col][0]};--sc:${L?L.c:"#9d84d8"}">
+    <h3><span class="code">${k}</span>${esc(C.fr)}</h3>
+    <div class="evid">${ev}</div>
+    ${teacher ? `<div class="moda">✍️ Ta professeure va lire ton texte et choisir le niveau.<span class="es">Tu profesora leerá tu texto y elegirá el nivel con esta rúbrica.</span></div>`
+      : `<div class="moda">Niveau du critère (le plus fréquent) : <span class="lvl">${L.k} · ${L.es}</span></div>`}
+    <details><summary>📋 Voir la rubrique du critère ${k} · Ver la rúbrica</summary>
+      <p class="es" style="margin:6px 0 0">${esc(C.es)}</p>
+      <div class="rub">${C.rub.map((t,i)=>`<div class="${i===col?"on":""}"><b>${RUBHEAD[i]}</b>${esc(t)}</div>`).join("")}</div>
+    </details>
+  </div>`;
 }
 
 /* ---------- textos para soluciones y PDF ---------- */
@@ -1208,7 +1249,7 @@ function buildPdf(){
     y += 4; ensure(24);
     doc.setFillColor(...PCOL[p.col]); doc.roundedRect(L, y-5.5, W, 8.5, 2, 2, "F");
     doc.setTextColor(...ink); doc.setFont("helvetica","bold"); doc.setFontSize(11.5);
-    doc.text(clean(`Page ${n} · ${p.titre}`), L+3, y); doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text(clean(p.skill), L+W-3, y, {align:"right"});
+    doc.text(clean(`Page ${n} · ${p.titre}`), L+3, y); doc.setFont("helvetica","normal"); doc.setFontSize(9); doc.text(clean(`Critère ${p.crit} · ${p.skill}`), L+W-3, y, {align:"right"});
     y += 9;
   }
   paper();
@@ -1224,19 +1265,25 @@ function buildPdf(){
   doc.text(clean(`Prénom : ${S.id.prenom}`), L+4, y); doc.text(clean(`Classe : ${S.id.classe}`), L+W/2, y); y += 5.3;
   doc.text(clean(`Nom : ${S.id.nom}`), L+4, y); doc.text(clean(`Date : ${S.id.date}`), L+W/2, y); y += 10;
 
-  txt("Mon bilan · Resumen", {size:13, style:"bold", color:pen}); y += 1;
   const graded = PAGES.filter(p=>p.sticker && p.type!=="dessin");
-  graded.forEach(p => {
-    const s = score(p); ensure(6);
-    doc.setFillColor(...PCOL[p.col]); doc.rect(L, y-4, 2.5, 5.5, "F");
-    doc.setFont("helvetica","normal"); doc.setFontSize(10); doc.setTextColor(...ink);
-    doc.text(clean(`Page ${PAGES.indexOf(p)} · ${p.titre}`), L+5, y); doc.setTextColor(...muted); doc.text(clean(p.skill), L+100, y);
-    pill(s.lvl, L+160, y); y += 6.5;
+  txt("Bilan par critère · Resumen por criterio", {size:13, style:"bold", color:pen});
+  txt("Nivel de cada criterio = nivel más repetido (moda) de sus ejercicios. No se hace media entre criterios.", {size:9, color:muted}); y += 1.5;
+  Object.keys(CRITS).forEach(k => {
+    const C = CRITS[k], pages = critPages(k), teacher = pages.some(p=>p.type==="dessin");
+    ensure(22);
+    doc.setFillColor(...PCOL[pages[0].col]); doc.roundedRect(L, y-4.6, W, 7, 1.5, 1.5, "F");
+    doc.setFont("helvetica","bold"); doc.setFontSize(10.5); doc.setTextColor(...ink); doc.text(clean(`Critère ${k} · ${C.fr}`), L+3, y);
+    if(!teacher){ const m = critMode(k); doc.setFontSize(9); doc.text("Moda :", L+W-22, y); pill(m, L+W-12, y+.2); }
+    y += 7;
+    pages.forEach(p => { ensure(6); doc.setFont("helvetica","normal"); doc.setFontSize(9.6); doc.setTextColor(...ink);
+      doc.text(clean(`Page ${PAGES.indexOf(p)} · ${p.titre}`), L+5, y);
+      if(p.type==="dessin"){ doc.setTextColor(...muted); doc.text("Production écrite : niveau donné par la professeure (voir la rubrique page finale)", L+70, y); }
+      else pill(score(p).lvl, L+70, y);
+      y += 5.6; });
+    if(!teacher){ const m = critMode(k); txt(`Descriptor (${RUBHEAD[RUBCOL(m)]}) : ${C.rub[RUBCOL(m)]}`, {size:8.4, color:muted, indent:5}); }
+    y += 2.5;
   });
-  const co = PAGES.filter(p=>p.skill==="Compréhension orale").map(p=>score(p).lvl);
-  ensure(8); doc.setTextColor(...muted); doc.setFontSize(9.5); doc.text(clean("Compréhension orale (3 pages) · niveau le plus fréquent :"), L+5, y); pill(modeLevel(co), L+160, y); y += 6.5;
-  doc.setTextColor(...ink); doc.text(clean(`Page ${PAGES.findIndex(p=>p.id==="moi")} · Et toi ? Ton autoportrait`), L+5, y); doc.setTextColor(...muted); doc.text("Production écrite : à évaluer par la professeure", L+100, y); y += 6.5;
-  if(S.auto!=null){ const A = ["J'ai adoré !","C'était bien.","Bof...","C'était difficile."]; txt(`Mon avis sur l'activité : ${A[S.auto]}`, {indent:5, color:muted}); }
+  if(S.auto!=null){ const A = ["J'ai adoré !","C'était bien.","Bof...","C'était difficile."]; txt(`Mon avis sur l'activité : ${A[S.auto]}`, {color:muted}); }
 
   graded.concat([]).forEach(p => {
     section(p, PAGES.indexOf(p));
@@ -1266,20 +1313,15 @@ function buildPdf(){
   y = Math.max(y, yTop + 66) + 3;
   txt("Je relis mon message (indicateurs automatiques, ce n'est pas une note) :", {style:"bold"});
   CHECKS.forEach(c => { const on = c.re.test(S.ecrit); txt(`${on?"[x]":"[  ]"} ${c.fr}`, {indent:3, color: on?green:muted}); });
-  y += 2; txt("Échelle pour la professeure :", {style:"bold"});
-  const ECH = [
-    "No se presenta o el texto no se entiende; casi no usa être ni avoir.",
-    "Se presenta con frases muy sencillas; usa être o avoir con errores frecuentes; falta la negación o es incorrecta.",
-    "Saluda, dice nombre y edad; usa être y avoir con algunos errores; intenta una negación.",
-    "Texto claro con saludo y despedida; être y avoir casi siempre bien (edad con avoir); negación correcta.",
-    "Texto completo y ordenado; être, avoir y s'appeler correctos; negación con n' o de bien usada; añade detalles propios."
-  ];
-  [4,3,2,1,0].forEach(li => { ensure(9); const yy = y; pill(li, L, y); txt(ECH[li], {indent:14, size:9.5}); if(y-yy < 5.5) y = yy+5.5; y += .8; });
-  y += 2; txt("Niveau donné par la professeure :   IN  ·  SU  ·  BI  ·  NT  ·  SB", {style:"bold"});
+  y += 2; txt("Rubrique du critère 2.2 (entoure le niveau) · Rúbrica del criterio 2.2:", {style:"bold"}); y += 1;
+  CRITS["2.2"].rub.forEach((t,i) => { ensure(14); const yy = y; doc.setFillColor(...[[217,87,122],[200,169,44],[95,168,216],[61,154,108]][i]); doc.roundedRect(L, y-4, 15, 5.6, 1.4, 1.4, "F"); doc.setTextColor(255,255,255); doc.setFont("helvetica","bold"); doc.setFontSize(8.5); doc.text(RUBHEAD[i].replace(" · ","/"), L+7.5, y, {align:"center"}); txt(t, {indent:18, size:8.4}); if(y-yy<5.5) y = yy+5.5; y += 1; });
+  y += 2; txt("Niveau du critère 2.2 donné par la professeure :   IN  ·  SU  ·  BI  ·  NT  ·  SB", {style:"bold"});
 
   y += 6; ensure(30);
   txt("Para la profesora", {size:11, style:"bold", color:pen});
-  txt("Cada página corregida se valora de IN a SB a partir del porcentaje de aciertos (interno, sin mostrar números: SB desde el 90 %, NT 75 %, BI 60 %, SU 50 %). La actividad no da nota global; los niveles se llevan como evidencias al registro de cada criterio (Instrucciones de evaluación 2026-27, Segunda.6, .9 y .10). Las respuestas se bloquean al pulsar «Je vérifie», así que el nivel refleja el primer y único intento. Las audiciones usan la voz francesa del navegador.", {size:9, color:muted});
+  txt("Cada ejercicio (página) está asociado a un criterio y se valora de IN a SB según el porcentaje de aciertos (interno, sin números: SB desde el 90 %, NT 75 %, BI 60 %, SU 50 %). El nivel de cada criterio es la moda de sus ejercicios; si hay empate, el nivel central (el más cercano a la mediana; si equidistan, el superior), igual que en el Excel de rúbricas. No hay media entre criterios ni nota global (Instrucciones de evaluación 2026-27, Segunda.6, .9 y .10). Las respuestas se bloquean al pulsar «Je vérifie». Las audiciones usan la voz francesa del navegador. Rúbricas: descriptores de la Consejería (IN / SU-BI / NT / SB).", {size:9, color:muted});
+  y += 2; Object.keys(CRITS).forEach(k => txt(`${k}. ${CRITS[k].es}`, {size:8, color:muted}));
+  txt("Segunda Lengua Extranjera (Francés), 1º ESO, Decreto 30/2023, de 16 de marzo (Canarias).", {size:8, color:muted, style:"italic"});
 
   const pages = doc.getNumberOfPages();
   for(let pg=1; pg<=pages; pg++){ doc.setPage(pg);
@@ -1295,7 +1337,17 @@ function gapContext(p,i){
   const a = prev.trim().split(/\s+/).slice(-4).join(" "), b = next.trim().split(/\s+/).slice(0,3).join(" ");
   return `... ${a} ___ ${b} ...`;
 }
-function modeLevel(arr){ const c = [0,0,0,0,0]; arr.forEach(l=>c[l]++); let best = 0; c.forEach((v,i)=>{ if(v>c[best] || (v===c[best] && i>best)) best = i; }); return best; }
+// Moda de las evidencias de un criterio. Empate: «el central» (de los niveles empatados, el más
+// cercano a la mediana de todas las evidencias; si equidistan, el superior), como en el Excel de rúbricas.
+function modeLevel(arr){
+  if(!arr.length) return -1;
+  const c = [0,0,0,0,0]; arr.forEach(l=>c[l]++); const mx = Math.max(...c);
+  const tied = c.map((v,i)=>v===mx?i:-1).filter(i=>i>=0); if(tied.length===1) return tied[0];
+  const s = arr.slice().sort((a,b)=>a-b), m = s.length%2 ? s[(s.length-1)/2] : (s[s.length/2-1]+s[s.length/2])/2;
+  return tied.reduce((best,i)=> Math.abs(i-m) < Math.abs(best-m) || (Math.abs(i-m)===Math.abs(best-m) && i>best) ? i : best, tied[0]);
+}
+function critPages(k){ return PAGES.filter(p=>p.crit===k); }
+function critMode(k){ return modeLevel(critPages(k).filter(p=>p.type!=="dessin" && S.done[p.id]).map(p=>score(p).lvl)); }
 function fileName(){
   const base = `${S.prueba?"PRUEBA_":""}Carnet_Nora_1ESO_${S.id.nom}_${S.id.prenom}`.normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Za-z0-9_-]+/g,"_").replace(/_+/g,"_");
   return base.slice(0,120) + ".pdf";
